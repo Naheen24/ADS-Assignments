@@ -1,0 +1,64 @@
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection; 
+import com.mongodb.client.MongoDatabase; 
+import org.bson.Document; 
+import com.mongodb.MongoClient; 
+import com.mongodb.MongoCredential; 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+public class mongo_class 
+{ 
+	public static void main( String args[] ) { 
+	// Creating a Mongo client 
+	MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
+	// Creating Credentials 	
+	MongoCredential credential; 
+	credential = MongoCredential.createCredential("sampleUser", "myDB","password".toCharArray()); 
+	System.out.println("Connected to the database successfully"); 
+	// Accessing the database 
+	MongoDatabase database = mongo.getDatabase("myDB"); 
+	/* Retrieving a collection*/
+	MongoCollection<Document> collection = database.getCollection("product"); 
+	System.out.println("Collection product selected successfully");
+	Document document = new Document("title", "product1") 
+	.append("prod_id", 101)
+	.append("prod_name", "cloths") 
+	.append("cost", "20000") 
+	.append("brand", "ccc");
+	collection.insertOne(document);
+	System.out.println();
+	System.out.println("Document inserted successfully"); 
+	System.out.println();
+	
+	Document doc1 = new Document("title", "product2")
+	.append("prod_id", 102)
+	.append("prod_name", "TV") 
+	.append("cost", "60000") 
+	.append("brand", "ttt");
+	Document doc2 = new Document("title", "product3")
+	.append("prod_id", 103)
+	.append("prod_name", "Laptop") 
+	.append("cost", "90000") 
+	.append("brand", "lll");
+	Document doc3 = new Document("title", "product4")
+	.append("prod_id", 104)
+	.append("prod_name", "Cycles") 
+	.append("cost", "15000") 
+	.append("brand", "ccc");
+	List<Document> list = new ArrayList<Document>();
+		list.add(doc1);
+		list.add(doc2);
+		list.add(doc3);
+		collection.insertMany(list);
+		// Getting the iterable object
+		FindIterable<Document> iterDoc = collection.find();
+		int i = 1;
+		// Getting the iterator
+		Iterator it = iterDoc.iterator();
+		while (it.hasNext()) {
+			System.out.println(it.next());
+			i++;
+		}
+	} 
+}
